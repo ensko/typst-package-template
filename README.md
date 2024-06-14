@@ -1,4 +1,4 @@
-# The `my-package` Package
+# The `PACKAGE` Package
 <div align="center">Version 0.1.0</div>
 
 A short description about the project and/or client.
@@ -6,7 +6,7 @@ A short description about the project and/or client.
 ## Template adaptation checklist
 
 - [ ] Fill out `README.md`
-  - Change the `my-package` package name, including code snippets
+  - Change the `PACKAGE` package name, including code snippets
   - Check section contents and/or delete sections that don't apply
 - [ ] Check and/or replace `LICENSE` by something that suits your needs
 - [ ] Fill out `typst.toml`
@@ -30,7 +30,7 @@ A short description about the project and/or client.
 These instructions will get you a copy of the project up and running on the typst web app. Perhaps a short code example on importing the package and a very simple teaser usage.
 
 ```typ
-#import "@preview/my-package:0.1.0": *
+#import "@preview/PACKAGE:0.1.0": *
 
 #show: my-show-rule.with()
 #my-func()
@@ -56,7 +56,7 @@ $ Final step
 A more in-depth description of usage. Any template arguments? A complicated example that showcases most if not all of the functions the package provides? This is also an excellent place to signpost the manual.
 
 ```typ
-#import "@preview/my-package:0.1.0": *
+#import "@preview/PACKAGE:0.1.0": *
 
 #let my-complicated-example = ...
 ```

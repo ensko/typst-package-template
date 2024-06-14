@@ -1,14 +1,16 @@
 # for a description of available keys, see https://github.com/typst/packages/?tab=readme-ov-file#package-format
 
 [package]
-name = ""
-version = "0.1.0"
+name = "PACKAGE"
+version = "0.0.1"
 entrypoint = "src/lib.typ"
-authors = []
+authors = [
+  "Clemens Koza <https://github.com/ensko/>"
+]
 license = "Unlicense"
-description = ""
-homepage = ""
-repository = ""
+description = "my package"
+# homepage = ""
+repository = "https://github.com/ensko/typst-PACKAGE"
 keywords = []
 categories = []
 disciplines = []
