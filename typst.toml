@@ -18,6 +18,7 @@ disciplines = []
 exclude = [
   ".github",
   "docs",
+  "gallery",
   "scripts",
   "tests",
   ".typstignore",
