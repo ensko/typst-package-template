@@ -39,6 +39,22 @@ To add this package to your project, use this:
   <img src="./thumbnail-light.svg">
 </picture>
 
+### Development
+
+The following steps describe how to get started developing this package. To run tests you need [typst-test](https://github.com/tingerrr/typst-test). Then, clone the package repository
+
+```
+# install typst-test locally, using Cargo
+cargo install typst-test --git https://github.com/tingerrr/typst-test --tag ci-semi-stable
+# clone this repo and enter the directory
+git clone https://github.com/SillyFreak/typst-package-template
+cd typst-package-template
+```
+
 ## Usage
 
 See the [manual](docs/manual.pdf) for details.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
