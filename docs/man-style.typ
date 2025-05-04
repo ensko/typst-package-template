@@ -137,7 +137,8 @@
   })
 
   if args.len() != 0 {
-    [*#style-args.local-names.parameters:*]
+
+    [*#get-local-name("parameters", style-args: style-args):*]
     args.join()
   }
   v(4em, weak: true)
