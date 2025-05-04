@@ -7,13 +7,14 @@
 
 #show: manual(
   title: "PACKAGE",
-  // subtitle: [
-  //   A PACKAGE for something
-  // ],
-  authors: package-meta.authors.map(a => a.split("<").at(0).trim()),
-  abstract: [
+  subtitle: [
     A PACKAGE for something
   ],
+  // logo: rect(width: 5cm, height: 5cm),
+  authors: package-meta.authors.map(a => a.split("<").at(0).trim()),
+  // abstract: [
+  //   A PACKAGE for something
+  // ],
   url: package-meta.repository,
   version: package-meta.version,
   date: date,

@@ -1,8 +1,8 @@
 // adapted from https://github.com/Mc-Zen/tidy/blob/98612b847da41ffb0d1dc26fa250df5c17d50054/docs/template.typ
 // licensed under the MIT license
 
-#import "@preview/tidy:0.4.1"
-#import "@preview/codly:1.2.0"
+#import "@preview/tidy:0.4.3"
+#import "@preview/codly:1.3.0"
 
 #import "man-style.typ"
 
@@ -12,8 +12,9 @@
 #let manual(
   title: "",
   subtitle: "",
+  logo: none,
   authors: (),
-  abstract: [],
+  abstract: none,
   url: none,
   version: none,
   date: none,
@@ -38,6 +39,10 @@
   align(center, {
     block(text(weight: 700, 1.75em, title))
     block(text(1.0em, subtitle))
+    if logo != none {
+      v(4em, weak: true)
+      logo
+    }
     v(4em, weak: true)
     if date == none [
       v#version
@@ -64,19 +69,21 @@
   v(3cm, weak: true)
 
   // Abstract.
-  pad(
-    x: 3.8em,
-    top: 1em,
-    bottom: 1.1em,
-    align(center)[
-      #heading(
-        outlined: false,
-        numbering: none,
-        text(0.85em, smallcaps[Abstract]),
-      )
-      #abstract
-    ],
-  )
+  if abstract != none {
+    pad(
+      x: 3.8em,
+      top: 1em,
+      bottom: 1.1em,
+      align(center)[
+        #heading(
+          outlined: false,
+          numbering: none,
+          text(0.85em, smallcaps[Abstract]),
+        )
+        #abstract
+      ],
+    )
+  }
 
   set par(justify: true)
   show raw.where(block: true): set par(justify: false)
