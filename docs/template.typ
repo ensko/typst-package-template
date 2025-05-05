@@ -24,81 +24,77 @@
   set page(numbering: "1", number-align: center)
   set text(font: "Libertinus Serif", lang: "en")
 
-  show heading.where(level: 1): it => block(smallcaps(it), below: 1em)
-  // set heading(numbering: (..args) => if args.pos().len() == 1 { numbering("I", ..args) })
   set heading(numbering: "I.a")
+  show heading.where(level: 1): set block(below: 1em)
+  show heading.where(level: 1): smallcaps
+
   show list: pad.with(x: 5%)
+
+  show: codly.codly-init
+  show raw.where(block: true): set text(size: .9em)
+  show raw.where(block: true): pad.with(x: 4%)
+  codly.codly(fill: white)
 
   // show link: set text(fill: purple.darken(30%))
   show link: set text(fill: rgb("#1e8f6f"))
   show link: underline
 
-  v(4em)
+  // title page
+  page(columns: 2, {
+    place(top, float: true, scope: "parent", {
+      show: block.with(height: 75%, above: 1.5cm)
 
-  // Title row.
-  align(center, {
-    block(text(weight: 700, 1.75em, title))
-    block(text(1.0em, subtitle))
-    if logo != none {
+      set align(center)
+
+      // title
+      block(text(weight: 700, 1.75em, title))
+      block(text(1.0em, subtitle))
+
+      // logo
+      if logo != none {
+        v(4em, weak: true)
+        logo
+      }
+
+      // version, date
       v(4em, weak: true)
-      logo
-    }
-    v(4em, weak: true)
-    if date == none [
-      v#version
-    ] else [
-      v#version
-      #h(1.2cm)
-      #date.display("[month repr:long] [day], [year]")
-    ]
-    block(link(url))
-    v(1.5em, weak: true)
+      [v#version]
+      if date != none [
+        #h(1.2cm)
+        #date.display("[month repr:long] [day], [year]")
+      ]
+
+      // url
+      block(link(url))
+      v(1.5em, weak: true)
+
+      // authors
+      block(above: 0.5cm, {
+        pad(x: 2em, grid(
+          columns: (1fr,) * calc.min(3, authors.len()),
+          gutter: 1em,
+          ..authors.map(author => align(center, strong(author))),
+        ))
+      })
+
+
+      v(1fr)
+
+      set align(left)
+      set par(justify: true)
+      pad(x: 8%, abstract)
+
+      v(1fr)
+
+    })
+
+    outline(depth: 3)
   })
 
-  // Author information.
-  pad(
-    top: 0.5em,
-    x: 2em,
-    grid(
-      columns: (1fr,) * calc.min(3, authors.len()),
-      gutter: 1em,
-      ..authors.map(author => align(center, strong(author))),
-    ),
-  )
-
-  v(3cm, weak: true)
-
-  // Abstract.
-  if abstract != none {
-    pad(
-      x: 3.8em,
-      top: 1em,
-      bottom: 1.1em,
-      align(center)[
-        #heading(
-          outlined: false,
-          numbering: none,
-          text(0.85em, smallcaps[Abstract]),
-        )
-        #abstract
-      ],
-    )
-  }
+  // Main body.
 
   set par(justify: true)
   show raw.where(block: true): set par(justify: false)
-  v(10em)
-
-  // Outline.
-  pad(x: 10%, outline(depth: 1))
-  pagebreak()
-
-
-  // Main body.
-  show: codly.codly-init
-  show raw.where(block: true): set text(size: .9em)
-  show raw.where(block: true): pad.with(x: 4%)
-  codly.codly(fill: white)
 
   body
 }
