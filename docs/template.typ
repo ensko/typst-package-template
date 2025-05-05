@@ -3,6 +3,7 @@
 
 #import "@preview/tidy:0.4.3"
 #import "@preview/codly:1.3.0"
+#import "@preview/t4t:0.4.2"
 
 #import "man-style.typ"
 
@@ -10,15 +11,30 @@
 // It takes your content and some metadata and formats it.
 // Go ahead and customize it to your liking!
 #let manual(
-  title: "",
-  subtitle: "",
+  package-meta: none,
+
+  title: auto,
+  subtitle: auto,
   logo: none,
-  authors: (),
+  authors: auto,
   abstract: none,
-  url: none,
-  version: none,
+  url: auto,
+  version: auto,
   date: none,
 ) = body => {
+  import t4t.def: if-auto
+
+  let title = if-auto(title, def: package-meta.name)
+  let subtitle = if-auto(subtitle, def: package-meta.description)
+  let authors = if-auto(authors, def: {
+    package-meta.at("authors").map(a => a.split("<").first().trim())
+  })
+  let url = if-auto(url, def: {
+    package-meta.at("homepage", default:
+      package-meta.at("repository", default: none))
+  })
+  let version = if-auto(version, def: package-meta.version)
+
   // Set the document's basic properties.
   set document(author: authors, title: title, date: date)
   set page(numbering: "1", number-align: center)
