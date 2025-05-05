@@ -1,23 +1,15 @@
 #import "template.typ" as template: *
 #import "/src/lib.typ" as PACKAGE
 
-#let package-meta = toml("/typst.toml").package
-#let date = none
-// #let date = datetime(year: ..., month: ..., day: ...)
-
 #show: manual(
-  title: "PACKAGE",
-  subtitle: [
-    A PACKAGE for something
-  ],
+  package-meta: toml("/typst.toml").package,
+  date: none,
+  // date: datetime(year: ..., month: ..., day: ...)
+
   // logo: rect(width: 5cm, height: 5cm),
-  authors: package-meta.authors.map(a => a.split("<").at(0).trim()),
   // abstract: [
   //   A PACKAGE for something
   // ],
-  url: package-meta.repository,
-  version: package-meta.version,
-  date: date,
 )
 
 // the scope for evaluating expressions and documentation
