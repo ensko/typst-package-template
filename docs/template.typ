@@ -47,7 +47,7 @@
   // Set the document's basic properties.
   set document(author: authors, title: title, date: date)
   set page(numbering: "1", number-align: center)
-  set text(font: "Libertinus Serif", lang: "en")
+  set text(font: man-style.serif-font, lang: "en")
 
   set heading(numbering: "I.a")
   show heading.where(level: 1): set block(below: 1em)
@@ -184,17 +184,12 @@
 #let preview-block(body, ..args) = {
   show: figure
   man-style.preview-block(
-    radius: man-style.preview-radius * 3,
+    radius: man-style.preview-radius * 1.25,
+    in-raw: false,
     ..args,
-    {
-      set heading(numbering: none, outlined: false)
-      set text(size: .8em)
-      show: box.with(
-        width: 80%,
-        inset: 20pt,
-      )
-      show: align.with(left)
-      block(breakable: false, body)
-    }
+    block(width: 90%, inset: 16pt, breakable: false, {
+      set align(left)
+      body
+    })
   )
 }

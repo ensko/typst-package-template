@@ -95,6 +95,7 @@
   }
 }
 
+#let serif-font = "Libertinus Serif"
 #let mono = text.with(font: "DejaVu Sans Mono", size: 0.85em, weight: 340)
 #let name-fill = rgb("#1f2a63")
 #let signature-fill = rgb("#d8dbed")
@@ -144,10 +145,14 @@
   )
 }
 
-#let preview-block(body, no-codly: true, ..args) = {
+#let preview-block(body, no-codly: true, in-raw: true, ..args) = {
   import "template.typ": codly
 
   show: if no-codly { codly.no-codly } else { it => it }
+  set heading(numbering: none, outlined: false)
+  // counteract the font changes of raw blocks
+  set text(font: serif-font, size: 1em/0.96) if in-raw
+
   block(
     pad(-2pt, body),
     stroke: 0.5pt + luma(200),
@@ -162,6 +167,8 @@
 
   example.default-layout-example(
     code-block: (body, ..args) => {
+      // counteract the raw font size decrease of the template being applied twice
+      set text(size: 1em/0.9)
       t4t.assert.no-pos(args)
       let args = args.named()
       _ = args.remove("inset", default: none)
@@ -320,9 +327,14 @@
   v(4em, weak: true)
 }
 
-#let show-example(..args) = {
+#let show-example(no-codly: true, in-raw: true, ..args) = {
   import "template.typ": tidy
   import tidy.show-example as example
 
-  example.show-example(layout: layout-example, ..args)
+  example.show-example(
+    layout: layout-example.with(
+      preview-block: preview-block.with(no-codly: no-codly, in-raw: in-raw),
+    ),
+    ..args,
+  )
 }
