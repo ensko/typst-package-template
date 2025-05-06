@@ -2,6 +2,99 @@
 
 // ==== internal utilities
 
+// https://github.com/jneug/typst-mantys/blob/cb32c63394ef441eb6038d4090634c7d823b9e11/src/api/types.typ
+/// Dictionary of builtin types, mapping the types name to its actual type.
+#let _type-map = (
+  "auto": auto,
+  "none": none,
+  // foundations
+  arguments: arguments,
+  array: array,
+  bool: bool,
+  bytes: bytes,
+  content: content,
+  datetime: datetime,
+  dictionary: dictionary,
+  float: float,
+  function: function,
+  int: int,
+  location: location,
+  module: module,
+  plugin: plugin,
+  regex: regex,
+  selector: selector,
+  string: str,
+  type: type,
+  label: label,
+  version: version,
+  // layout
+  alignment: alignment,
+  angle: angle,
+  direction: direction,
+  fraction: fraction,
+  length: length,
+  ratio: ratio,
+  relative: relative,
+  // visualize
+  color: color,
+  gradient: gradient,
+  stroke: stroke,
+)
+/// Dictionary of allowed type aliases, like `dict` for `dictionary`.
+#let _type-aliases = (
+  boolean: "bool",
+  str: "string",
+  arr: "array",
+  dict: "dictionary",
+  integer: "int",
+  func: "function",
+)
+#let _type-link-map = (
+  "auto": "foundations/auto",
+  "none": "foundations/none",
+  // foundation
+  arguments: "foundations/arguments",
+  array: "foundations/array",
+  bool: "foundations/bool",
+  bytes: "foundations/bytes",
+  content: "foundations/content",
+  datetime: "foundations/datetime",
+  dictionary: "foundations/dictionary",
+  float: "foundations/float",
+  function: "foundations/function",
+  integer: "foundations/int",
+  location: "foundations/location",
+  module: "foundations/module",
+  plugin: "foundations/plugin",
+  regex: "foundations/regex",
+  selector: "foundations/selector",
+  string: "foundations/str",
+  type: "foundations/type",
+  label: "foundations/label",
+  version: "foundations/version",
+  // layout
+  alignment: "layout/alignment",
+  angle: "layout/angle",
+  direction: "layout/direction",
+  fraction: "layout/fraction",
+  length: "layout/length",
+  ratio: "layout/ratio",
+  relative: "layout/relative",
+  // visualize
+  color: "visualize/color",
+  gradient: "visualize/gradient",
+  stroke: "visualize/stroke",
+)
+#let type-link(t, body) = {
+  if t in _type-aliases { t = _type-aliases.at(t) }
+  if t in _type-link-map {
+    link("https://typst.app/docs/reference/" + _type-link-map.at(t), body)
+  } else {
+    // probably a custom type
+    body
+  }
+}
+
 #let mono = text.with(font: "DejaVu Sans Mono", size: 0.85em, weight: 340)
 #let name-fill = rgb("#1f2a63")
 #let signature-fill = rgb("#d8dbed")
@@ -99,7 +192,9 @@
 // Create beautiful, colored type box
 #let show-type(type, style-args: (:)) = {
   h(2pt)
-  box(outset: 2pt, fill: get-type-color(type), radius: 2pt, raw(type, lang: none))
+  type-link(type, {
+    box(outset: 2pt, fill: get-type-color(type), radius: 2pt, raw(type, lang: none))
+  })
   h(2pt)
 }
 

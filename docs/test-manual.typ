@@ -49,6 +49,9 @@
   scope: (PACKAGE: PACKAGE, world: world, greet: greet),
 )
 
+#show link: set text(fill: rgb("#1e8f6f"))
+#show link: underline
+
 = Introduction
 
 This is a PACKAGE for something, providing #ref-fn("greet()") and #ref-fn("world").
