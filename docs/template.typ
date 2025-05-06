@@ -119,7 +119,7 @@
 
   set par(justify: true)
   show raw.where(block: true): set par(justify: false)
-  show: tidy.render-examples.with(scope: scope)
+  show: tidy.render-examples.with(scope: scope, layout: man-style.layout-example)
 
   body
 }
