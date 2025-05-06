@@ -144,14 +144,31 @@
   )
 }
 
-#let preview-block(no-codly: true, ..args) = {
+#let preview-block(body, no-codly: true, ..args) = {
   import "template.typ": codly
 
   show: if no-codly { codly.no-codly } else { it => it }
   block(
+    pad(-2pt, body),
     stroke: 0.5pt + luma(200),
     radius: preview-radius,
     ..args
+  )
+}
+
+#let layout-example(..args) = {
+  import "template.typ": tidy, t4t
+  import tidy.show-example as example
+
+  example.default-layout-example(
+    code-block: (body, ..args) => {
+      t4t.assert.no-pos(args)
+      let args = args.named()
+      _ = args.remove("inset", default: none)
+      block(pad(x: -4.3%, body), ..args)
+    },
+    preview-block: preview-block,
+    ..args,
   )
 }
 
@@ -303,133 +320,9 @@
   v(4em, weak: true)
 }
 
-// Adapted from https://github.com/Mc-Zen/tidy/blob/v0.3.0/src/show-example.typ
-// see discussion here: https://discord.com/channels/1054443721975922748/1296208677371379813
+#let show-example(..args) = {
+  import "template.typ": tidy
+  import tidy.show-example as example
 
-/// Takes given code and both shows it and previews the result of its evaluation.
-///
-/// The code is by default shown in the language mode `lang: typc` (typst code)
-/// if no language has been specified. Code in typst markup language (`lang: typ`)
-/// is automatically evaluated in markup mode.
-///
-/// - code (raw): Raw object holding the example code.
-/// - scope (dictionary): Additional definitions to make available for the evaluated
-///          example code.
-/// - scale-preview (auto, ratio): How much to rescale the preview. If set to auto, the the preview is scaled to fit the box.
-/// - inherited-scope (dictionary): Definitions that are made available to the entire parsed
-///          module. This parameter is only used internally.
-#let show-example(
-  code,
-  dir: ltr,
-  scope: (:),
-  preamble: "",
-  ratio: 1,
-  scale-preview: auto,
-  mode: "code",
-  inherited-scope: (:),
-  code-block: block,
-  preview-block: preview-block,
-  col-spacing: 5pt,
-  ..options
-) = {
-  set raw(block: true)
-  let lang = if code.has("lang") { code.lang } else { "typc" }
-  if lang == "typ" {
-    mode = "markup"
-  }
-  if mode == "markup" and not code.has("lang") {
-    lang = "typ"
-  }
-  set raw(lang: lang)
-  if code.has("block") and code.block == false {
-    code = raw(code.text, lang: lang, block: true)
-  }
-
-  let preview = {
-    set heading(numbering: none, outlined: false)
-    [#eval(preamble + code.text, mode: mode, scope: scope + inherited-scope)]
-  }
-
-  let preview-outer-padding = 3pt
-  let preview-inner-padding = 5pt
-
-  show: if dir.axis() == "vertical" { pad.with(x: 4%) } else { it => it }
-
-  layout(size => {
-    let code-width
-    let preview-width
-
-    if dir.axis() == "vertical" {
-      code-width = size.width
-      preview-width = size.width
-    } else {
-      code-width = ratio / (ratio + 1) * size.width - 0.5 * col-spacing
-      preview-width = size.width - code-width - col-spacing
-    }
-
-    let available-preview-width = preview-width - 2 * (preview-outer-padding + preview-inner-padding)
-
-    let preview-size
-    let scale-preview = scale-preview
-
-    if scale-preview == auto {
-      preview-size = measure(preview)
-      assert(preview-size.width != 0pt, message: "The code example has a relative width. Please set `scale-preview` to a fixed ratio, e.g., `100%`")
-      scale-preview = calc.min(1, available-preview-width / preview-size.width) * 100%
-    } else {
-      preview-size = measure(block(preview, width: available-preview-width / (scale-preview / 100%)))
-    }
-
-    set par(hanging-indent: 0pt) // this messes up some stuff in case someone sets it
-
-
-    // We first measure this thing (code + preview) to find out which of the two has
-    // the larger height. Then we can just set the height for both boxes.
-    let arrangement(width: 100%, height: auto) = {
-      let code-block = code-block(
-        width: code-width,
-        height: height,
-        {
-          set text(size: .9em)
-          pad(x: -4.3%, code)
-        }
-      )
-      let preview-block = preview-block(
-        height: height,
-        width: preview-width,
-        inset: preview-outer-padding,
-        box(
-          width: 100%,
-          fill: white,
-          inset: preview-inner-padding,
-          scale(
-            scale-preview,
-            origin: top + left,
-            block(preview, height: preview-size.height, width: preview-size.width)
-          )
-        )
-      )
-
-      show: block.with(
-        width: width,
-        inset: 0pt,
-      )
-
-      grid(
-        ..if dir.axis() == "horizontal" {
-          (columns: 2, rows: 1, column-gutter: col-spacing)
-        } else {
-          (columns: 1, rows: 2, row-gutter: col-spacing)
-        },
-        ..if dir in (ltr, ttb) {
-          (code-block, preview-block)
-        } else {
-          (preview-block, code-block)
-        }
-      )
-    }
-    let height = if dir.axis() == "vertical" { auto }
-      else { measure(arrangement(width: size.width)).height }
-    arrangement(height: height)
-  })
+  example.show-example(layout: layout-example, ..args)
 }
