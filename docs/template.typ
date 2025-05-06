@@ -7,6 +7,8 @@
 
 #import "man-style.typ"
 
+#let _info = state("manual:info")
+
 // The manual function defines how your document looks.
 // It takes your content and some metadata and formats it.
 // Go ahead and customize it to your liking!
@@ -21,6 +23,8 @@
   url: auto,
   version: auto,
   date: none,
+
+  scope: (:),
 ) = body => {
   import t4t.def: if-auto
 
@@ -34,6 +38,11 @@
       package-meta.at("repository", default: none))
   })
   let version = if-auto(version, def: package-meta.version)
+
+  _info.update((
+    meta: package-meta,
+    scope: scope,
+  ))
 
   // Set the document's basic properties.
   set document(author: authors, title: title, date: date)
@@ -111,6 +120,7 @@
 
   set par(justify: true)
   show raw.where(block: true): set par(justify: false)
+  show: tidy.render-examples.with(scope: scope)
 
   body
 }
@@ -136,20 +146,23 @@
     name = raw(name)
   }
 
-  let module = tidy.parse-module(
-    code,
-    name: name,
-    label-prefix: label-prefix,
-    scope: scope,
-    preamble: preamble,
-  )
-  tidy.show-module(
-    module,
-    show-module-name: name != none,
-    sort-functions: none,
-    style: man-style,
-    ..args,
-  )
+  context {
+    let scope = _info.get().scope + scope
+    let module = tidy.parse-module(
+      code,
+      name: name,
+      label-prefix: label-prefix,
+      scope: scope,
+      preamble: preamble,
+    )
+    tidy.show-module(
+      module,
+      show-module-name: name != none,
+      sort-functions: none,
+      style: man-style,
+      ..args,
+    )
+  }
 }
 
 #let ref-fn(name) = link(label(name), man-style.mono(name))

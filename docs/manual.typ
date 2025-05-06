@@ -10,10 +10,9 @@
   // abstract: [
   //   A PACKAGE for something
   // ],
-)
 
-// the scope for evaluating expressions and documentation
-#let scope = (PACKAGE: PACKAGE)
+  scope: (PACKAGE: PACKAGE),
+)
 
 = Introduction
 
@@ -25,5 +24,4 @@ This is a PACKAGE for something.
   read("/src/lib.typ"),
   name: "PACKAGE",
   label-prefix: none,
-  scope: scope,
 )
