@@ -60,9 +60,8 @@
   show raw.where(block: true): pad.with(x: 4%)
   codly.codly(fill: white)
 
-  // show link: set text(fill: purple.darken(30%))
-  show link: set text(fill: rgb("#1e8f6f"))
-  show link: underline
+  // show link: set text(fill: rgb("#1e8f6f"))
+  // show link: underline
 
   // title page
   page(columns: 2, {
