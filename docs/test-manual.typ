@@ -49,12 +49,12 @@
   scope: (PACKAGE: PACKAGE, world: world, greet: greet),
 )
 
-#show link: set text(fill: rgb("#1e8f6f"))
+// #show link: set text(fill: rgb("#1e8f6f"))
 #show link: underline
 
 = Introduction
 
-This is a PACKAGE for something, providing #ref-fn("greet()") and #ref-fn("world").
+This is a PACKAGE for something, providing #ref-fn("pkg.greet()") and #ref-fn("pkg.world").
 #context text.size
 
 ```example
@@ -76,5 +76,5 @@ This is a PACKAGE for something, providing #ref-fn("greet()") and #ref-fn("world
 #module(
   src,
   name: "PACKAGE",
-  label-prefix: none,
+  label-prefix: "pkg",
 )

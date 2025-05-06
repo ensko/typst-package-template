@@ -164,7 +164,7 @@
   }
 }
 
-#let ref-fn(name) = link(label(name), man-style.mono(name))
+#let ref-fn(name) = man-style.show-reference(label(name), name)
 
 #let file-code(filename, code) = pad(x: 4%, block(
   width: 100%,
