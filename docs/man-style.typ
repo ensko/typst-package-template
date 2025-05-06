@@ -97,13 +97,20 @@
 
 #let serif-font = "Libertinus Serif"
 #let mono = text.with(font: "DejaVu Sans Mono", size: 0.85em, weight: 340)
+#let module-fill = rgb("#693085")
 #let name-fill = rgb("#1f2a63")
 #let signature-fill = rgb("#d8dbed")
 #let radius = 2pt
 #let preview-radius = 0.32em
 
 #let mono-fn(name, args: none, ret: none) = mono({
-  text(name-fill, name)
+  if "." in name {
+    let (..mod, name) = name.split(".")
+    mod = mod.join(".")
+    text(module-fill, mod) + "." + text(name-fill, name)
+  } else {
+    text(name-fill, name)
+  }
   if args != none {
     let args = args.map(box)
     if args.len() <= 3 {
@@ -303,7 +310,12 @@
 )
 
 #let show-reference(label, name, style-args: none) = {
-  link(label, raw(name, lang: none))
+  let (name, args) = if name.ends-with("()") {
+    (name.slice(0, -2), ())
+  } else {
+    (name, none)
+  }
+  link(label, mono-fn(name, args: args))
 }
 
 #let show-variable(
