@@ -7,7 +7,7 @@
 /// -> content
 #let world = [World]
 
-/// Greets someone @@greet()
+/// Greets someone @greet
 /// #context text.size
 ///
 /// ```example

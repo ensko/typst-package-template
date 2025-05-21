@@ -240,7 +240,7 @@
     let lbl = if style-args.enable-cross-references {
       label(style-args.label-prefix + fn.name + "()")
     }
-    [#parameter-list #lbl]
+    [#parameter-list#lbl]
   })
   pad(x: 0em, eval-docstring(fn.description, style-args))
 
@@ -259,12 +259,13 @@
       style-args,
       show-default: "default" in info,
       default: info.at("default", default: none),
+      function-name: style-args.label-prefix + fn.name,
     )
   })
 
   if args.len() != 0 {
-
-    [*#get-local-name("parameters", style-args: style-args):*]
+    let parameters-string = get-local-name("parameters", style-args: style-args)
+    [*#parameters-string:*]
     args.join()
   }
   v(4em, weak: true)
@@ -280,6 +281,9 @@
           args = args.filter(((arg-name, info)) => not arg-name.starts-with("_"))
         }
         args = args.map(((arg-name, info)) => {
+          if style-args.enable-cross-references and not (info.at("description", default: "") == "" and style-args.omit-empty-param-descriptions) {
+            arg-name = link(label(style-args.label-prefix + fn.name + "." + arg-name.trim(".")), arg-name)
+          }
           arg-name
           if "types" in info [: #show-types(info.types, style-args)]
         })
@@ -295,12 +299,16 @@
   name, types, content, style-args,
   show-default: false,
   default: none,
+  function-name: none,
 ) = block(
   breakable: style-args.break-param-descriptions,
   inset: 0pt, width: 100%,
   {
     set par(hanging-indent: 1em, first-line-indent: 0em)
-    mono(name)
+    let lbl = if function-name != none and style-args.enable-cross-references {
+      label(function-name + "." + name.trim("."))
+    }
+    [#mono(name)#lbl]
     [ (]
     show-types(types, style-args, joiner: [ #text(size: 0.6em)[or] ])
     if show-default [ \= #raw(lang: "typc", default)]
