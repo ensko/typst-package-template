@@ -124,6 +124,15 @@
   body
 }
 
+// retrieve the package metadata (contextual)
+#let package-meta() = _info.get().meta
+
+// retrieve the package import spec, i.e. `@preview/<name>:<version>` (contextual)
+#let package-import-spec(namespace: "preview") = {
+  let meta = package-meta()
+  "@" + namespace + "/" + meta.name + ":" + meta.version
+}
+
 #let module(
   code,
   name: none,
