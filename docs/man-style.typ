@@ -14,18 +14,19 @@
   bytes: bytes,
   content: content,
   datetime: datetime,
+  decimal: decimal,
   dictionary: dictionary,
+  duration: duration,
   float: float,
   function: function,
   int: int,
-  location: location,
+  label: label,
   module: module,
-  plugin: plugin,
   regex: regex,
   selector: selector,
   string: str,
+  symbol: symbol,
   type: type,
-  label: label,
   version: version,
   // layout
   alignment: alignment,
@@ -39,6 +40,11 @@
   color: color,
   gradient: gradient,
   stroke: stroke,
+  tiling: tiling,
+  // introspection
+  counter: counter,
+  location: location,
+  state: state,
 )
 /// Dictionary of allowed type aliases, like `dict` for `dictionary`.
 #let _type-aliases = (
@@ -59,18 +65,19 @@
   bytes: "foundations/bytes",
   content: "foundations/content",
   datetime: "foundations/datetime",
+  decimal: "foundations/decimal",
   dictionary: "foundations/dictionary",
+  duration: "foundations/duration",
   float: "foundations/float",
   function: "foundations/function",
   integer: "foundations/int",
-  location: "foundations/location",
+  label: "foundations/label",
   module: "foundations/module",
-  plugin: "foundations/plugin",
   regex: "foundations/regex",
   selector: "foundations/selector",
   string: "foundations/str",
+  symbol: "foundations/symbol",
   type: "foundations/type",
-  label: "foundations/label",
   version: "foundations/version",
   // layout
   alignment: "layout/alignment",
@@ -84,6 +91,11 @@
   color: "visualize/color",
   gradient: "visualize/gradient",
   stroke: "visualize/stroke",
+  tiling: "visualize/tiling",
+  // introspection
+  counter: "foundations/counter",
+  location: "foundations/location",
+  state: "foundations/state",
 )
 #let type-link(t, body) = {
   if t in _type-aliases { t = _type-aliases.at(t) }
