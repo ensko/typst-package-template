@@ -128,6 +128,9 @@
 // retrieve the package metadata (contextual)
 #let package-meta() = _info.get().meta
 
+// retrieve the evaluation scope (contextual)
+#let eval-scope() = _info.get().scope
+
 // retrieve the package import spec, i.e. `@preview/<name>:<version>` (contextual)
 #let package-import-spec(namespace: "preview") = {
   let meta = package-meta()
@@ -156,7 +159,7 @@
   }
 
   context {
-    let scope = _info.get().scope + scope
+    let scope = eval-scope() + scope
     let module = tidy.parse-module(
       code,
       name: name,
