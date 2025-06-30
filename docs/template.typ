@@ -66,9 +66,11 @@
   // title page
   page(columns: 2, {
     place(top, float: true, scope: "parent", {
-      show: block.with(height: 75%, above: 1.5cm)
+      show: block.with(height: 75%)
 
       set align(center)
+
+      v(1fr)
 
       // title
       block(text(weight: 700, 1.75em, title))
@@ -100,7 +102,6 @@
           ..authors.map(author => align(center, strong(author))),
         ))
       })
-
 
       v(1fr)
 
