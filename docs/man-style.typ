@@ -208,6 +208,8 @@
     ..module-doc.functions.map(fn => gen-entry(fn.name, args: ())),
     ..module-doc.variables.map(var => gen-entry(var.name)),
   )
+
+  show: block.with(sticky: true)
   grid(
     columns: (1fr,) * 3,
     column-gutter: 0.5em,
