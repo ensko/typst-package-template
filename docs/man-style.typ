@@ -1,5 +1,9 @@
 // adapted from https://github.com/Mc-Zen/tidy/blob/v0.3.0/src/styles/minimal.typ
 
+#import "@preview/bullseye:0.1.0": match-target, on-target
+
+#let lazy-target(..targets) = match-target(..targets)()
+
 // ==== internal utilities
 
 /// Dictionaries of builtin types, mapping the types name to actual type & URL fragment in docs.
@@ -87,28 +91,45 @@
 #let radius = 2pt
 #let preview-radius = 0.32em
 
-#let mono-fn(name, args: none, ret: none) = mono({
-  text(name-fill, name)
-  if args != none {
-    let args = args.map(box)
-    if args.len() <= 3 {
-      "("
-      args.join(", ")
-      ")"
-    } else {
-      "(\n"
-      args.map(arg => "  " + arg + ",").join("\n")
-      "\n)"
-    }
-  }
-  if ret != none {
+#let mono-fn(name, args: none, ret: none, lbl: none) =  {
+  let signature = {
     if args != none {
-      box[~-> #ret]
-    } else {
-      box[: #ret]
+      let args = args.map(box)
+      if args.len() <= 3 {
+        "("
+        args.join(", ")
+        ")"
+      } else {
+        "(\n"
+        args.map(arg => "  " + arg + ",").join("\n")
+        "\n)"
+      }
+    }
+    if ret != none {
+      if args != none {
+        box[~-> #ret]
+      } else {
+        box[: #ret]
+      }
     }
   }
-})
+  context lazy-target(
+    paged: () => mono({
+      text(name-fill, name)
+      [#signature#lbl]
+    }),
+    html: () => {
+      if lbl != none {
+        import "template.typ": _haita_path_str
+        let haita-path-str = _haita_path_str.get()
+        let chapter-heading-state = state(haita-path-str + " chapter state", ())
+        chapter-heading-state.update(arr => arr + (lbl,))
+      }
+      [#html.span(class: "text-[#1f2a63]", name)#lbl]
+      signature
+    }
+  )
+}
 
 #let get-type-color(type) = rgb("#eff0f3")
 
@@ -116,19 +137,27 @@
   types.map(style-args.style.show-type.with(style-args: style-args)).join(joiner)
 }
 
-#let signature-block(..args) = {
-  let bar-width = 1mm
-  set par(justify: false)
-  block(
-    width: 100%,
-    radius: radius,
-    fill: signature-fill,
-    stroke: (left: bar-width + name-fill),
-    outset: (left: -bar-width / 2),
-    inset: (x: 0.7em, y: 0.7em),
-    ..args
-  )
-}
+#let signature-block(..args) = context lazy-target(
+  paged: () => {
+    let bar-width = 1mm
+    set par(justify: false)
+    block(
+      width: 100%,
+      radius: radius,
+      fill: signature-fill,
+      stroke: (left: bar-width + name-fill),
+      outset: (left: -bar-width / 2),
+      inset: (x: 0.7em, y: 0.7em),
+      sticky: true,
+      ..args
+    )
+  },
+  html: () => {
+    let (body,) = args.pos()
+    show: html.div.with(class: "mt-8 mb-2 p-2 border-l-4 border-l-[#1f2a63] rounded-md bg-[#d8dbed] text-sm font-mono not-prose")
+    body
+  },
+)
 
 #let preview-block(body, no-codly: true, in-raw: true, ..args) = {
   import "template.typ": codly
@@ -171,8 +200,7 @@
   let gen-entry(name, args: none) = {
     let entry = mono-fn(name, args: args)
     if style-args.enable-cross-references {
-      let lbl = prefix + name
-      if args != none { lbl += "()" }
+      let lbl = prefix + if args != none {"fn-"} else {"var-"} + name
       entry = link(label(lbl), entry)
     }
     entry
@@ -181,8 +209,6 @@
     ..module-doc.functions.map(fn => gen-entry(fn.name, args: ())),
     ..module-doc.variables.map(var => gen-entry(var.name)),
   )
-
-  show: block.with(sticky: true)
   grid(
     columns: (1fr,) * 3,
     column-gutter: 0.5em,
@@ -201,13 +227,19 @@
 }
 
 // Create beautiful, colored type box
-#let show-type(type, style-args: (:)) = {
-  h(2pt)
-  type-link(type, {
-    box(outset: 2pt, fill: get-type-color(type), radius: 2pt, raw(type, lang: none))
-  })
-  h(2pt)
-}
+#let show-type(type, style-args: (:)) = context lazy-target(
+  paged: () => {
+    h(2pt)
+    type-link(type, {
+      box(outset: 2pt, fill: get-type-color(type), radius: 2pt, raw(type, lang: none))
+    })
+    h(2pt)
+  },
+  html: () => {
+    show: html.span.with(class: "m-0.5 px-[2px] py-[1px] rounded-sm bg-gray-100 not-prose")
+    type-link(type, type)
+  },
+)
 
 #let show-function(
   fn, style-args,
@@ -215,14 +247,10 @@
   import "template.typ": tidy
   import tidy.utilities: *
 
-  block(breakable: style-args.break-param-descriptions, sticky: true, {
-    let parameter-list = (style-args.style.show-parameter-list)(fn, style-args)
-    let lbl = if style-args.enable-cross-references {
-      label(style-args.label-prefix + fn.name + "()")
-    }
-    [#parameter-list#lbl]
+  block(breakable: style-args.break-param-descriptions, {
+    (style-args.style.show-parameter-list)(fn, style-args)
   })
-  pad(x: 0em, eval-docstring(fn.description, style-args))
+  block(eval-docstring(fn.description, style-args))
 
   let args = fn.args.pairs()
   if style-args.omit-private-parameters {
@@ -248,13 +276,16 @@
     [*#parameters-string:*]
     args.join()
   }
-  v(4em, weak: true)
+  context on-target(paged: {
+    v(4em, weak: true)
+  })
 }
 
 #let show-parameter-list(fn, style-args) = {
   signature-block(breakable: style-args.break-param-descriptions, {
     mono-fn(
       fn.name,
+      lbl: label(style-args.label-prefix + "fn-" + fn.name),
       args: {
         let args = fn.args.pairs()
         if style-args.omit-private-parameters {
@@ -298,6 +329,19 @@
 )
 
 #let show-reference(label, name, style-args: none) = {
+  // references in Tidy docs look like `@@variable` or `@@function()`
+  // transform them into `prefix.var-variable` and `prefix.fn-function`
+  let txt = str(label)
+  let index = txt.rev().position(".")
+  // index _after_ the period, if any
+  let index = if index == none { 0 } else { txt.len() - index }
+  if str(label).ends-with("()") {
+    label = txt.slice(0, index) + "fn-" + txt.slice(index, -2)
+  } else {
+    label = txt.slice(0, index) + "var-" + txt.slice(index)
+  }
+  label = std.label(label)
+
   let (name, args) = if name.ends-with("()") {
     (name.slice(0, -2), ())
   } else {
@@ -312,19 +356,18 @@
   import "template.typ": tidy
   import tidy.utilities: *
 
-  signature-block(breakable: style-args.break-param-descriptions, sticky: true, {
-    let var-signature = mono-fn(
+  signature-block(breakable: style-args.break-param-descriptions, {
+    mono-fn(
       var.name,
+      lbl: label(style-args.label-prefix + "var-" + var.name),
       ret: if "type" in var { (style-args.style.show-type)(var.type, style-args: style-args) },
     )
-    let lbl = if style-args.enable-cross-references {
-      label(style-args.label-prefix + var.name)
-    }
-    [#var-signature #lbl]
   })
-  pad(x: 0em, eval-docstring(var.description, style-args))
+  block(eval-docstring(var.description, style-args))
 
-  v(4em, weak: true)
+  context on-target(paged: {
+    v(4em, weak: true)
+  })
 }
 
 #let show-example(no-codly: true, in-raw: true, ..args) = {

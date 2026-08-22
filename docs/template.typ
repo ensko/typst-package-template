@@ -8,6 +8,18 @@
 #import "man-style.typ"
 
 #let _info = state("manual:info")
+#let _haita_path_str = state("manual:haita-path-str")
+
+// set the package metadata and scope
+#let set-info(
+  package-meta: none,
+  scope: (:),
+) = {
+  _info.update((
+    meta: package-meta,
+    scope: scope,
+  ))
+}
 
 // The manual function defines how your document looks.
 // It takes your content and some metadata and formats it.
@@ -39,10 +51,10 @@
   })
   let version = if-auto(version, def: package-meta.version)
 
-  _info.update((
-    meta: package-meta,
+  set-info(
+    package-meta: package-meta,
     scope: scope,
-  ))
+  )
 
   // Set the document's basic properties.
   set document(author: authors, title: title, date: date)
@@ -143,6 +155,7 @@
   label-prefix: auto,
   scope: (:),
   preamble: "",
+  haita-path-str: none,
   ..args,
 ) = {
   let (name, label-prefix) = (name, label-prefix)
@@ -167,6 +180,7 @@
       scope: scope,
       preamble: preamble,
     )
+    _haita_path_str.update(haita-path-str)
     tidy.show-module(
       module,
       show-module-name: name != none,
