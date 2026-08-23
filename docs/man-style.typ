@@ -123,9 +123,10 @@
         import "template.typ": _haita_path_str
         let haita-path-str = _haita_path_str.get()
         let chapter-heading-state = state(haita-path-str + " chapter state", ())
-        chapter-heading-state.update(arr => arr + (lbl,))
+        chapter-heading-state.update(arr => (..arr, lbl))
       }
-      [#html.span(class: "text-[#1f2a63]", name)#lbl]
+      html.span(class: "text-[#1f2a63]", name)
+      if lbl != none [#metadata[= #name]#lbl]
       signature
     }
   )

@@ -155,7 +155,6 @@
   label-prefix: auto,
   scope: (:),
   preamble: "",
-  haita-path-str: none,
   ..args,
 ) = {
   let (name, label-prefix) = (name, label-prefix)
@@ -180,7 +179,6 @@
       scope: scope,
       preamble: preamble,
     )
-    _haita_path_str.update(haita-path-str)
     tidy.show-module(
       module,
       show-module-name: name != none,

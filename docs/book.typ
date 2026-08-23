@@ -1,7 +1,7 @@
-#import "@preview/haita:0.3.0" as haita: *
+#import "@preview/haita:0.4.0" as haita: *
 
 #import "/src/lib.typ" as PACKAGE
-#import "template.typ": set-info
+#import "template.typ": set-info, _haita_path_str
 
 #set-info(
   package-meta: toml("/typst.toml").package,
@@ -11,6 +11,7 @@
 #let chapter(path, filename: auto, content: auto, ..args) = haita.chapter(
   path,
   content: {
+    _haita_path_str.update(path)
     if content != auto {
       content
     } else {
@@ -21,12 +22,11 @@
   ..args,
 )
 
-#let name = toml("/typst.toml").package.name
+#let (name, homepage) = toml("/typst.toml").package
 
 #book(
   title: name,
-  canonical-url: "https://docs.ensko.at",
-  root: name,
+  base-url: homepage,
 
   // This sets your html renderer. You can customize the HTML renderer
   // using `html-renderer.with(...)`, or write your own!
