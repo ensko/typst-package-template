@@ -2,51 +2,65 @@
 
 // ==== internal utilities
 
-// https://github.com/jneug/typst-mantys/blob/cb32c63394ef441eb6038d4090634c7d823b9e11/src/api/types.typ
-/// Dictionary of builtin types, mapping the types name to its actual type.
-#let _type-map = (
-  // foundations
-  arguments: arguments,
-  array: array,
-  "auto": type(auto),
-  bool: bool,
-  bytes: bytes,
-  content: content,
-  datetime: datetime,
-  decimal: decimal,
-  dictionary: dictionary,
-  duration: duration,
-  float: float,
-  function: function,
-  int: int,
-  label: label,
-  module: module,
-  "none": type(none),
-  path: path,
-  regex: regex,
-  selector: selector,
-  str: str,
-  symbol: symbol,
-  type: type,
-  version: version,
-  // layout
-  alignment: alignment,
-  angle: angle,
-  direction: direction,
-  fraction: fraction,
-  length: length,
-  ratio: ratio,
-  relative: relative,
-  // visualize
-  color: color,
-  gradient: gradient,
-  stroke: stroke,
-  tiling: tiling,
-  // introspection
-  counter: counter,
-  location: location,
-  state: state,
-)
+/// Dictionaries of builtin types, mapping the types name to actual type & URL fragment in docs.
+#let (_type-map, _type-link-map) = {
+  let categories = (
+    foundations: (
+      arguments: arguments,
+      array: array,
+      "auto": type(auto),
+      bool: bool,
+      bytes: bytes,
+      content: content,
+      datetime: datetime,
+      decimal: decimal,
+      dictionary: dictionary,
+      duration: duration,
+      float: float,
+      function: function,
+      int: int,
+      label: label,
+      module: module,
+      "none": type(none),
+      path: path,
+      regex: regex,
+      selector: selector,
+      str: str,
+      symbol: symbol,
+      type: type,
+      version: version,
+    ),
+    layout: (
+      alignment: alignment,
+      angle: angle,
+      direction: direction,
+      fraction: fraction,
+      length: length,
+      ratio: ratio,
+      relative: relative,
+    ),
+    visualize: (
+      color: color,
+      gradient: gradient,
+      stroke: stroke,
+      tiling: tiling,
+    ),
+    introspection: (
+      counter: counter,
+      location: location,
+      state: state,
+    ),
+  )
+
+  (
+    _type-map: categories.values().join(),
+    _type-link-map: {
+      for (category, types) in categories {
+        types.keys().map(key => (key, category + "/" + key)).to-dict()
+      }
+    }
+  )
+}
 /// Dictionary of allowed type aliases, like `dict` for `dictionary`.
 #let _type-aliases = (
   arr: "array",
@@ -55,49 +69,6 @@
   func: "function",
   integer: "int",
   string: "str",
-)
-#let _type-link-map = (
-  // foundation
-  arguments: "foundations/arguments",
-  array: "foundations/array",
-  "auto": "foundations/auto",
-  bool: "foundations/bool",
-  bytes: "foundations/bytes",
-  content: "foundations/content",
-  datetime: "foundations/datetime",
-  decimal: "foundations/decimal",
-  dictionary: "foundations/dictionary",
-  duration: "foundations/duration",
-  float: "foundations/float",
-  function: "foundations/function",
-  int: "foundations/int",
-  label: "foundations/label",
-  module: "foundations/module",
-  "none": "foundations/none",
-  path: "foundations/path",
-  regex: "foundations/regex",
-  selector: "foundations/selector",
-  str: "foundations/str",
-  symbol: "foundations/symbol",
-  type: "foundations/type",
-  version: "foundations/version",
-  // layout
-  alignment: "layout/alignment",
-  angle: "layout/angle",
-  direction: "layout/direction",
-  fraction: "layout/fraction",
-  length: "layout/length",
-  ratio: "layout/ratio",
-  relative: "layout/relative",
-  // visualize
-  color: "visualize/color",
-  gradient: "visualize/gradient",
-  stroke: "visualize/stroke",
-  tiling: "visualize/tiling",
-  // introspection
-  counter: "introspection/counter",
-  location: "introspection/location",
-  state: "introspection/state",
 )
 #let type-link(t, body) = {
   if t in _type-aliases { t = _type-aliases.at(t) }
