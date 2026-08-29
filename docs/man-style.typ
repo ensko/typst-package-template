@@ -5,11 +5,10 @@
 // https://github.com/jneug/typst-mantys/blob/cb32c63394ef441eb6038d4090634c7d823b9e11/src/api/types.typ
 /// Dictionary of builtin types, mapping the types name to its actual type.
 #let _type-map = (
-  "auto": auto,
-  "none": none,
   // foundations
   arguments: arguments,
   array: array,
+  "auto": type(auto),
   bool: bool,
   bytes: bytes,
   content: content,
@@ -22,9 +21,11 @@
   int: int,
   label: label,
   module: module,
+  "none": type(none),
+  path: path,
   regex: regex,
   selector: selector,
-  string: str,
+  str: str,
   symbol: symbol,
   type: type,
   version: version,
@@ -48,19 +49,18 @@
 )
 /// Dictionary of allowed type aliases, like `dict` for `dictionary`.
 #let _type-aliases = (
-  boolean: "bool",
-  str: "string",
   arr: "array",
+  boolean: "bool",
   dict: "dictionary",
-  integer: "int",
   func: "function",
+  integer: "int",
+  string: "str",
 )
 #let _type-link-map = (
-  "auto": "foundations/auto",
-  "none": "foundations/none",
   // foundation
   arguments: "foundations/arguments",
   array: "foundations/array",
+  "auto": "foundations/auto",
   bool: "foundations/bool",
   bytes: "foundations/bytes",
   content: "foundations/content",
@@ -70,12 +70,14 @@
   duration: "foundations/duration",
   float: "foundations/float",
   function: "foundations/function",
-  integer: "foundations/int",
+  int: "foundations/int",
   label: "foundations/label",
   module: "foundations/module",
+  "none": "foundations/none",
+  path: "foundations/path",
   regex: "foundations/regex",
   selector: "foundations/selector",
-  string: "foundations/str",
+  str: "foundations/str",
   symbol: "foundations/symbol",
   type: "foundations/type",
   version: "foundations/version",
@@ -93,9 +95,9 @@
   stroke: "visualize/stroke",
   tiling: "visualize/tiling",
   // introspection
-  counter: "foundations/counter",
-  location: "foundations/location",
-  state: "foundations/state",
+  counter: "introspection/counter",
+  location: "introspection/location",
+  state: "introspection/state",
 )
 #let type-link(t, body) = {
   if t in _type-aliases { t = _type-aliases.at(t) }
