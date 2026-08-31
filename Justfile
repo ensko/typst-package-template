@@ -15,6 +15,14 @@ doc:
     typst compile "$f"; \
   done
 
+# build the book
+book:
+  typst compile --root . --features bundle,html --format bundle docs/book.typ docs/dist/
+  pagefind --site docs/dist --output-subdir pagefind
+
+serve-book:
+  typst watch --root . --features bundle,html --format bundle docs/book.typ docs/dist/
+
 # run test suite
 test *args:
   tt run --no-fail-fast {{ args }}

@@ -9,7 +9,7 @@ authors = [
 ]
 license = "MIT"
 description = "my package"
-# homepage = ""
+homepage = "https://docs.ensko.at/PACKAGE"
 repository = "https://github.com/ensko/typst-PACKAGE"
 keywords = []
 categories = []
